@@ -1,223 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Resume Job-Match Classifier</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root{
+            --primary: #0066cc; --primary-dark: #0052a3; --primary-light: #e6f0ff;
+            --secondary: #00a86b; --neutral-50: #f9fafb; --neutral-100:#f3f4f6;
+            --neutral-200:#e5e7eb; --neutral-300:#d1d5db; --neutral-600:#4b5563;
+            --neutral-700:#374151; --neutral-900:#111827; --success:#10b981;
+            --warning:#f59e0b; --error:#ef4444; --radius:8px; --radius-lg:12px;
         }
-
-        :root {
-            --primary: #0066cc;
-            --primary-dark: #0052a3;
-            --primary-light: #e6f0ff;
-            --secondary: #00a86b;
-            --neutral-50: #f9fafb;
-            --neutral-100: #f3f4f6;
-            --neutral-200: #e5e7eb;
-            --neutral-300: #d1d5db;
-            --neutral-600: #4b5563;
-            --neutral-700: #374151;
-            --neutral-900: #111827;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --error: #ef4444;
-            --radius: 8px;
-            --radius-lg: 12px;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+        body{
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background: linear-gradient(135deg, var(--neutral-50) 0%, var(--primary-light) 100%);
-            color: var(--neutral-700);
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            color: var(--neutral-700); line-height:1.6; min-height:100vh; display:flex;
+            align-items:center; justify-content:center; padding:20px;
         }
+        .container{ width:100%; max-width:700px; }
+        .header{text-align:center;margin-bottom:28px;}
+        .header-icon{ width:60px; height:60px; background:var(--primary); border-radius:12px; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:32px; color:white;}
+        .header h1{ font-size:28px; font-weight:700; color:var(--neutral-900); margin-bottom:6px; }
+        .header p{ font-size:14px; color:var(--neutral-600); }
 
-        .container {
-            width: 100%;
-            max-width: 600px;
-        }
+        .card{ background:white; border-radius:var(--radius-lg); padding:32px; box-shadow:0 4px 6px rgba(0,0,0,0.07),0 10px 20px rgba(0,0,0,0.05); border:1px solid var(--neutral-200); }
+        .form-group{ margin-bottom:20px; }
+        label{ display:block; font-size:13px; font-weight:600; color:var(--neutral-900); margin-bottom:10px; text-transform:uppercase; letter-spacing:0.5px; }
+        .file-input-wrapper{ position:relative; display:block; }
 
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
+        input[type="file"]{ display:none; }
+        .file-input-label{ display:flex; align-items:center; justify-content:center; padding:22px 14px; border:2px dashed var(--primary); border-radius:var(--radius); background:var(--primary-light); cursor:pointer; transition:all .25s ease; font-size:14px; font-weight:600; color:var(--primary); text-transform:uppercase; letter-spacing:0.5px;}
+        .file-input-label:hover{ background:var(--primary); color:white; border-color:var(--primary-dark); }
+        .file-input-label svg{ width:18px; height:18px; margin-right:8px; }
 
-        .header-icon {
-            width: 60px;
-            height: 60px;
-            background: var(--primary);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 32px;
-        }
+        .file-name{ display:block; font-size:13px; color:var(--neutral-600); margin-top:8px; font-weight:400; letter-spacing:normal; text-transform:none; }
 
-        .header h1 {
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--neutral-900);
-            margin-bottom: 8px;
-        }
+        .info-box{ background:var(--primary-light); border-left:4px solid var(--primary); padding:12px; border-radius:var(--radius); margin-top:12px; font-size:13px; color:var(--primary-dark); }
+        .info-box strong{ display:block; margin-bottom:6px; font-weight:700; }
 
-        .header p {
-            font-size: 16px;
-            color: var(--neutral-600);
-        }
+        .button-group{ display:flex; gap:12px; margin-top:20px; }
+        button{ flex:1; padding:12px 18px; border:none; border-radius:var(--radius); font-size:14px; font-weight:700; cursor:pointer; transition:all .2s ease; text-transform:uppercase; letter-spacing:0.5px; }
+        .btn-primary{ background:var(--primary); color:white; width:100%; }
+        .btn-primary:hover{ background:var(--primary-dark); box-shadow:0 8px 16px rgba(0,102,204,0.18); transform:translateY(-2px); }
+        .btn-primary:active{ transform:translateY(0); }
 
-        .card {
-            background: white;
-            border-radius: var(--radius-lg);
-            padding: 40px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--neutral-200);
-        }
+        /* Threshold controls */
+        .threshold-row{ display:flex; align-items:center; gap:12px; margin-top:8px; flex-wrap:wrap; }
+        .threshold-row input[type="range"]{ flex:1; min-width:180px; }
+        .threshold-small{ font-size:13px; color:var(--neutral-600); }
 
-        .form-group {
-            margin-bottom: 28px;
-        }
-
-        .form-group:last-child {
-            margin-bottom: 0;
-        }
-
-        label {
-            display: block;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--neutral-900);
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .file-input-wrapper {
-            position: relative;
-            display: block;
-        }
-
-        input[type="file"] {
-            display: none;
-        }
-
-        .file-input-label {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 32px 20px;
-            border: 2px dashed var(--primary);
-            border-radius: var(--radius);
-            background: var(--primary-light);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 15px;
-            font-weight: 500;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .file-input-label:hover {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary-dark);
-        }
-
-        .file-input-label svg {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
-        }
-
-        .file-name {
-            display: block;
-            font-size: 13px;
-            color: var(--neutral-600);
-            margin-top: 8px;
-            font-weight: 400;
-            text-transform: none;
-            letter-spacing: normal;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 12px;
-            margin-top: 32px;
-        }
-
-        button {
-            flex: 1;
-            padding: 14px 24px;
-            border: none;
-            border-radius: var(--radius);
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-            width: 100%;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            box-shadow: 0 8px 16px rgba(0, 102, 204, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .btn-primary:active {
-            transform: translateY(0);
-        }
-
-        .info-box {
-            background: var(--primary-light);
-            border-left: 4px solid var(--primary);
-            padding: 16px;
-            border-radius: var(--radius);
-            margin-top: 24px;
-            font-size: 14px;
-            color: var(--primary-dark);
-        }
-
-        .info-box strong {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-        }
-
-        @media (max-width: 640px) {
-            .card {
-                padding: 24px;
-            }
-
-            .header h1 {
-                font-size: 24px;
-            }
-
-            .header p {
-                font-size: 14px;
-            }
-
-            button {
-                padding: 12px 20px;
-                font-size: 14px;
-            }
+        @media (max-width:640px){
+            .card{ padding:20px; }
+            .header h1{ font-size:22px; }
+            .header p{ font-size:13px; }
+            button{ padding:10px 14px; font-size:13px; }
         }
     </style>
 </head>
@@ -230,13 +68,14 @@
         </div>
 
         <div class="card">
-            <form action="/upload" method="POST" enctype="multipart/form-data">
+            <!-- The threshold controls are included in the form so backend receives the cutoff -->
+            <form action="/upload" method="POST" enctype="multipart/form-data" id="analyzeForm">
                 <div class="form-group">
                     <label for="job-description">Job Description</label>
                     <div class="file-input-wrapper">
                         <input type="file" id="job-description" name="job_description" accept=".pdf,.docx,.txt" required>
                         <label for="job-description" class="file-input-label">
-                            <svg fill="currentColor" viewBox="0 0 20 20">
+                            <svg fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                                 <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"/>
                             </svg>
                             Upload Job Description
@@ -250,7 +89,7 @@
                     <div class="file-input-wrapper">
                         <input type="file" id="resumes" name="resumes" accept=".pdf,.docx,.txt" multiple required>
                         <label for="resumes" class="file-input-label">
-                            <svg fill="currentColor" viewBox="0 0 20 20">
+                            <svg fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                                 <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"/>
                             </svg>
                             Upload Multiple Resumes
@@ -259,9 +98,21 @@
                     </div>
                 </div>
 
+                <!-- Threshold control: strong cutoff (sent to server as 'threshold_percent') -->
+                <div class="form-group">
+                    <label for="thresholdRange">Strong match cutoff (percentage)</label>
+                    <div class="threshold-row" role="group" aria-labelledby="thresholdRange">
+                        <input id="thresholdRange" type="range" min="0" max="100" value="70" aria-label="Strong match cutoff slider">
+                        <input id="thresholdNumber" name="threshold_percent" type="number" min="0" max="100" value="70" style="width:70px" aria-label="Strong match cutoff number"> %
+                        <div class="threshold-small" id="thresholdNote">Candidates with match ≥ 70% will be considered <strong>Strong</strong>. Partial if ≥ 40% and &lt; 70%.</div>
+                        <!-- send partialCutoff so the backend can use same logic if desired -->
+                        <input type="hidden" name="partial_cutoff" id="partialCutoff" value="40">
+                    </div>
+                </div>
+
                 <div class="info-box">
                     <strong>💡 Tip:</strong>
-                    Upload a job description and multiple resumes to instantly see match scores and rankings.
+                    Upload a job description and multiple resumes to instantly see match scores and rankings. Use the cutoff slider to tune how conservative the "Strong" category should be.
                 </div>
 
                 <div class="button-group">
@@ -272,15 +123,56 @@
     </div>
 
     <script>
+        // Update file name displays
         document.getElementById('job-description').addEventListener('change', function(e) {
             const name = e.target.files[0]?.name || 'PDF, DOCX, or TXT';
             document.getElementById('job-name').textContent = name;
         });
-
         document.getElementById('resumes').addEventListener('change', function(e) {
             const count = e.target.files.length;
             const text = count === 1 ? '1 file selected' : count + ' files selected';
             document.getElementById('resumes-name').textContent = text;
+        });
+
+        // Threshold slider <-> number sync
+        const range = document.getElementById('thresholdRange');
+        const number = document.getElementById('thresholdNumber');
+        const note = document.getElementById('thresholdNote');
+        const partialHidden = document.getElementById('partialCutoff');
+
+        // partial cutoff default is 40; you may change it here or send a different value from server
+        const partialCutoffValue = Number(partialHidden.value || 40);
+
+        function setThreshold(val) {
+            val = Number(val);
+            if (isNaN(val)) val = 70;
+            val = Math.max(0, Math.min(100, Math.round(val)));
+            range.value = val;
+            number.value = val;
+            note.innerHTML = `Candidates with match ≥ <strong>${val}%</strong> will be considered <strong>Strong</strong>. Partial if ≥ ${partialCutoffValue}% and &lt; ${val}%.`;
+        }
+
+        range.addEventListener('input', function(e) {
+            setThreshold(e.target.value);
+        });
+
+        number.addEventListener('change', function(e) {
+            setThreshold(e.target.value);
+        });
+
+        // initialize
+        setThreshold(range.value);
+
+        // Optional small safeguard: before submit, ensure threshold_percent exists and is valid
+        document.getElementById('analyzeForm').addEventListener('submit', function (e) {
+            // Ensure number is in range
+            let v = Number(number.value);
+            if (isNaN(v) || v < 0 || v > 100) {
+                v = 70;
+                setThreshold(v);
+            }
+            // threshold_percent is already the name of the number input; form will submit it.
+            // partial_cutoff hidden field is included too.
         });
     </script>
 </body>

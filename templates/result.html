@@ -1,337 +1,162 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Match Results</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #0066cc;
-            --primary-dark: #0052a3;
-            --primary-light: #e6f0ff;
-            --secondary: #00a86b;
-            --neutral-50: #f9fafb;
-            --neutral-100: #f3f4f6;
-            --neutral-200: #e5e7eb;
-            --neutral-300: #d1d5db;
-            --neutral-600: #4b5563;
-            --neutral-700: #374151;
-            --neutral-900: #111827;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --error: #ef4444;
-            --radius: 8px;
-            --radius-lg: 12px;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-            background: linear-gradient(135deg, var(--neutral-50) 0%, var(--primary-light) 100%);
-            color: var(--neutral-700);
-            line-height: 1.6;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .header-icon {
-            width: 60px;
-            height: 60px;
-            background: var(--success);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 32px;
-        }
-
-        .header h1 {
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--neutral-900);
-            margin-bottom: 8px;
-        }
-
-        .header p {
-            font-size: 16px;
-            color: var(--neutral-600);
-        }
-
-        .card {
-            background: white;
-            border-radius: var(--radius-lg);
-            padding: 32px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--neutral-200);
-            margin-bottom: 24px;
-        }
-
-        .results-grid {
-            display: grid;
-            gap: 16px;
-        }
-
-        .result-item {
-            display: grid;
-            grid-template-columns: 1fr auto auto;
-            gap: 20px;
-            align-items: center;
-            padding: 20px;
-            background: var(--neutral-50);
-            border-radius: var(--radius);
-            border: 1px solid var(--neutral-200);
-            transition: all 0.3s ease;
-        }
-
-        .result-item:hover {
-            background: white;
-            border-color: var(--primary);
-            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.1);
-        }
-
-        .result-name {
-            font-weight: 600;
-            color: var(--neutral-900);
-            font-size: 15px;
-            word-break: break-word;
-        }
-
-        .score-badge {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .score-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .score-label {
-            font-size: 12px;
-            color: var(--neutral-600);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 600;
-        }
-
-        .result-badge {
-            padding: 8px 16px;
-            border-radius: var(--radius);
-            font-size: 13px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
-        }
-
-        .badge-match {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .badge-partial {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .badge-no-match {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-
-        .stat-card {
-            background: var(--primary-light);
-            padding: 20px;
-            border-radius: var(--radius);
-            text-align: center;
-            border: 1px solid var(--primary);
-        }
-
-        .stat-value {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 4px;
-        }
-
-        .stat-label {
-            font-size: 13px;
-            color: var(--primary-dark);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 600;
-        }
-
-        .actions {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            margin-top: 32px;
-        }
-
-        button {
-            padding: 12px 24px;
-            border: none;
-            border-radius: var(--radius);
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            box-shadow: 0 8px 16px rgba(0, 102, 204, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background: var(--neutral-200);
-            color: var(--neutral-900);
-        }
-
-        .btn-secondary:hover {
-            background: var(--neutral-300);
-            transform: translateY(-2px);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--neutral-600);
-        }
-
-        .empty-state-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-        }
-
-        .empty-state h3 {
-            font-size: 18px;
-            color: var(--neutral-900);
-            margin-bottom: 8px;
-        }
-
-        @media (max-width: 768px) {
-            .result-item {
-                grid-template-columns: 1fr;
-                gap: 12px;
-            }
-
-            .score-badge,
-            .result-badge {
-                justify-self: start;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .card {
-                padding: 20px;
-            }
-
-            .header h1 {
-                font-size: 24px;
-            }
-
-            .actions {
-                flex-direction: column;
-            }
-
-            button {
-                width: 100%;
-            }
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Match Results</title>
+  <style>
+    :root{
+      --primary:#0a63c7; --primary-light:#e9f2ff; --card:#fff; --muted:#6b7280;
+      --radius:10px;
+    }
+    body{ font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial; background:linear-gradient(180deg,#f6f9fb,#f1f6fb); color:#111; padding:36px 20px;}
+    .wrapper{ max-width:1100px; margin:0 auto; }
+    .top { text-align:center; margin-bottom:18px; }
+    .top h1{ font-size:34px; margin-bottom:6px; }
+    .card { background:var(--card); border-radius:var(--radius); padding:18px; box-shadow:0 6px 18px rgba(20,30,60,0.06); border:1px solid #eef2f6; }
+    .summary { display:flex; gap:14px; margin-bottom:18px; }
+    .summary .box{ flex:1; background:var(--primary-light); border:1px solid #cfe3ff; border-radius:8px; padding:22px; text-align:center; }
+    .summary .box h2{ color:var(--primary); font-size:28px; margin-bottom:6px; }
+    .summary .box p{ font-size:12px; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase; }
+    .controls { display:flex; gap:12px; align-items:center; margin-bottom:14px; }
+    .controls input[type="range"]{ flex:1; }
+    .results-list{ margin-top:12px; }
+    .resume-row{ display:flex; justify-content:space-between; align-items:center; padding:18px; border-radius:8px; background:#fff; border:1px solid #f1f5f9; margin-bottom:10px; }
+    .filename{ font-weight:600; color:#111; }
+    .right-col{ display:flex; gap:12px; align-items:center; }
+    .match-badge{ padding:8px 12px; border-radius:8px; font-weight:700; }
+    .fit { background: #e6fff0; color:#0a7a2b; border:1px solid #bfe9d0;}
+    .partial { background:#fff8e6; color:#a36b00; border:1px solid #f1dca8;}
+    .notfit { background:#fff1f1; color:#c21b1b; border:1px solid #f5c6c6;}
+    .match-percent { font-size:18px; color:var(--primary); font-weight:800; }
+    .small { font-size:12px; color:var(--muted); text-align:center; }
+    .muted { color:var(--muted); font-size:13px; }
+    .submit-btn{ background:var(--primary); color:white; border:none; padding:10px 16px; border-radius:8px; cursor:pointer; font-weight:700;}
+    @media (max-width:760px){ .summary{ flex-direction:column; } .controls{ flex-direction:column; align-items:flex-start;} .right-col{ flex-direction:column; } }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="header-icon">✓</div>
-            <h1>Match Results</h1>
-            <p>Resume analysis complete</p>
-        </div>
-
-        <div class="card">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-value">{% if results|length %}{{ results|length }}{% else %}0{% endif %}</div>
-                    <div class="stat-label">Resumes Analyzed</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">{% if results|selectattr('Result', 'equalto', 'Match')|list|length %}{{ results|selectattr('Result', 'equalto', 'Match')|list|length }}{% else %}0{% endif %}</div>
-                    <div class="stat-label">Strong Matches</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">{% if results|selectattr('Result', 'equalto', 'Partial Match')|list|length %}{{ results|selectattr('Result', 'equalto', 'Partial Match')|list|length }}{% else %}0{% endif %}</div>
-                    <div class="stat-label">Partial Matches</div>
-                </div>
-            </div>
-
-            {% if results %}
-            <div class="results-grid">
-                {% for row in results|sort(attribute='Match Score', reverse=True) %}
-                <div class="result-item">
-                    <div class="result-name">{{ row['Resume'] }}</div>
-                    <div class="score-badge">
-                        <div class="score-value">{{ row['Match Score'] }}</div>
-                        <div class="score-label">Match %</div>
-                    </div>
-                    <div class="result-badge {% if row['Result'] == 'Match' %}badge-match{% elif row['Result'] == 'Partial Match' %}badge-partial{% else %}badge-no-match{% endif %}">
-                        {{ row['Result'] }}
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            {% else %}
-            <div class="empty-state">
-                <div class="empty-state-icon">📭</div>
-                <h3>No Results</h3>
-                <p>No resumes were analyzed. Please upload files and try again.</p>
-            </div>
-            {% endif %}
-        </div>
-
-        <div class="actions">
-            <a href="/" style="text-decoration: none;">
-                <button class="btn-primary">Analyze Another Batch</button>
-            </a>
-        </div>
+  <div class="wrapper">
+    <div class="top">
+      <h1>Match Results</h1>
+      <div class="muted">Resume analysis complete</div>
     </div>
+
+    <div class="card">
+      <!-- Summary cards (server-side counts) -->
+      <div class="summary">
+        <div class="box">
+          <h2 id="totalCount">{{ counts.total }}</h2>
+          <p>Resumes Analyzed</p>
+        </div>
+        <div class="box">
+          <h2 id="strongCount">{{ counts.strong }}</h2>
+          <p>Strong Matches</p>
+        </div>
+        <div class="box">
+          <h2 id="partialCount">{{ counts.partial }}</h2>
+          <p>Partial Matches</p>
+        </div>
+      </div>
+
+      <!-- Threshold controls: change and submit back to server -->
+      <form id="thresholdForm" action="{{ url_for('apply_threshold') }}" method="POST" class="controls">
+        <!-- current threshold is prefilled by server -->
+        <label class="small" style="min-width:160px;">Strong cutoff (≥)</label>
+        <input id="thresholdRange" type="range" min="0" max="100" value="{{ threshold_percent }}" />
+        <input id="thresholdNumber" type="number" name="threshold_percent" min="0" max="100" value="{{ threshold_percent }}" style="width:80px" />
+        <div class="small">Partial if ≥ {{ partial_cutoff }}% and &lt; <span id="thresholdLabel">{{ threshold_percent }}</span>%</div>
+        <button type="submit" class="submit-btn">Apply cutoff (server)</button>
+      </form>
+
+      <!-- Results listing -->
+      <div class="results-list" id="resultsList">
+        {% for r in resumes %}
+          {# normalize value robustly: use float conversion and scale if <=1 #}
+          {% set raw = (r.match|float) %}
+          {% if raw <= 1 %}
+            {% set mp = (raw * 100) | round(2) %}
+          {% else %}
+            {% set mp = raw | round(2) %}
+          {% endif %}
+          <div class="resume-row" data-match="{{ mp }}" data-filename="{{ r.filename }}">
+            <div class="left-col">
+              <div class="filename">{{ r.filename }}</div>
+              <div class="muted">details...</div>
+            </div>
+
+            <div class="right-col">
+              <div class="match-percent" title="{{ mp }}%">{{ mp }}%</div>
+              {% if r.category is defined %}
+                <div class="match-badge {{ 'fit' if r.category == 'strong' else ('partial' if r.category == 'partial' else 'notfit') }}">
+                  {{ 'FIT' if r.category == 'strong' else ('PARTIAL' if r.category == 'partial' else 'NOT FIT') }}
+                </div>
+              {% else %}
+                <div class="match-badge" id="badge-{{ loop.index0 }}">-</div>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      // DOM references
+      const range = document.getElementById('thresholdRange');
+      const number = document.getElementById('thresholdNumber');
+      const thresholdLabel = document.getElementById('thresholdLabel');
+      const totalCountEl = document.getElementById('totalCount');
+      const strongCountEl = document.getElementById('strongCount');
+      const partialCountEl = document.getElementById('partialCount');
+
+      // partial_cutoff was passed from server; if not present, default to 40
+      const partialCutoff = {{ partial_cutoff|default(40) }};
+
+      function normalize(n){
+        const f = Number(n);
+        if (isNaN(f)) return 0;
+        return Math.max(0, Math.min(100, Math.round(f * 100) / 100));
+      }
+
+      function classifyAndRender(threshold){
+        threshold = Number(threshold);
+        thresholdLabel.textContent = threshold;
+        const rows = Array.from(document.querySelectorAll('.resume-row'));
+        let total = rows.length, strong=0, partial=0;
+        rows.forEach((row, idx) => {
+          const m = normalize(row.getAttribute('data-match'));
+          const badgeEl = row.querySelector('.match-badge');
+          if (m >= threshold){
+            strong++; if (badgeEl) { badgeEl.textContent = 'FIT'; badgeEl.className = 'match-badge fit'; }
+          } else if (m >= partialCutoff){
+            partial++; if (badgeEl) { badgeEl.textContent = 'PARTIAL'; badgeEl.className = 'match-badge partial'; }
+          } else {
+            if (badgeEl) { badgeEl.textContent = 'NOT FIT'; badgeEl.className = 'match-badge notfit'; }
+          }
+        });
+        if (totalCountEl) totalCountEl.textContent = total;
+        if (strongCountEl) strongCountEl.textContent = strong;
+        if (partialCountEl) partialCountEl.textContent = partial;
+      }
+
+      // sync range <-> number
+      range.addEventListener('input', e => {
+        number.value = e.target.value;
+        classifyAndRender(e.target.value);
+      });
+      number.addEventListener('change', e => {
+        let v = Number(e.target.value);
+        if (isNaN(v)) v = {{ threshold_percent }};
+        v = Math.max(0, Math.min(100, Math.round(v)));
+        number.value = v; range.value = v;
+        classifyAndRender(v);
+      });
+
+      // initial classification with server-provided threshold
+      classifyAndRender({{ threshold_percent }});
+    })();
+  </script>
 </body>
 </html>
