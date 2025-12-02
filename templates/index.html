@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Job-Match Classifier</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0066cc;
+            --primary-dark: #0052a3;
+            --primary-light: #e6f0ff;
+            --secondary: #00a86b;
+            --neutral-50: #f9fafb;
+            --neutral-100: #f3f4f6;
+            --neutral-200: #e5e7eb;
+            --neutral-300: #d1d5db;
+            --neutral-600: #4b5563;
+            --neutral-700: #374151;
+            --neutral-900: #111827;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --radius: 8px;
+            --radius-lg: 12px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, var(--neutral-50) 0%, var(--primary-light) 100%);
+            color: var(--neutral-700);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 32px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--neutral-900);
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 16px;
+            color: var(--neutral-600);
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--neutral-200);
+        }
+
+        .form-group {
+            margin-bottom: 28px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--neutral-900);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: block;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 20px;
+            border: 2px dashed var(--primary);
+            border-radius: var(--radius);
+            background: var(--primary-light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .file-input-label:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary-dark);
+        }
+
+        .file-input-label svg {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
+        .file-name {
+            display: block;
+            font-size: 13px;
+            color: var(--neutral-600);
+            margin-top: 8px;
+            font-weight: 400;
+            text-transform: none;
+            letter-spacing: normal;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 32px;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px 24px;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            box-shadow: 0 8px 16px rgba(0, 102, 204, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .info-box {
+            background: var(--primary-light);
+            border-left: 4px solid var(--primary);
+            padding: 16px;
+            border-radius: var(--radius);
+            margin-top: 24px;
+            font-size: 14px;
+            color: var(--primary-dark);
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 640px) {
+            .card {
+                padding: 24px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .header p {
+                font-size: 14px;
+            }
+
+            button {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-icon">📋</div>
+            <h1>Resume Matcher</h1>
+            <p>Find the perfect candidate-job fit</p>
+        </div>
+
+        <div class="card">
+            <form action="/upload" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="job-description">Job Description</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="job-description" name="job_description" accept=".pdf,.docx,.txt" required>
+                        <label for="job-description" class="file-input-label">
+                            <svg fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"/>
+                            </svg>
+                            Upload Job Description
+                        </label>
+                        <span class="file-name" id="job-name">PDF, DOCX, or TXT</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="resumes">Resumes</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="resumes" name="resumes" accept=".pdf,.docx,.txt" multiple required>
+                        <label for="resumes" class="file-input-label">
+                            <svg fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"/>
+                            </svg>
+                            Upload Multiple Resumes
+                        </label>
+                        <span class="file-name" id="resumes-name">Select one or more files</span>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <strong>💡 Tip:</strong>
+                    Upload a job description and multiple resumes to instantly see match scores and rankings.
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn-primary">Analyze Matches</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('job-description').addEventListener('change', function(e) {
+            const name = e.target.files[0]?.name || 'PDF, DOCX, or TXT';
+            document.getElementById('job-name').textContent = name;
+        });
+
+        document.getElementById('resumes').addEventListener('change', function(e) {
+            const count = e.target.files.length;
+            const text = count === 1 ? '1 file selected' : count + ' files selected';
+            document.getElementById('resumes-name').textContent = text;
+        });
+    </script>
+</body>
+</html>
