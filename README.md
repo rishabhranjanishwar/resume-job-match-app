@@ -44,6 +44,13 @@ This project helps recruiters instantly identify **Strong**, **Partial**, and **
 
 ---
 
+## 🖼️ UI Screenshots
+<img width="740" height="846" alt="image" src="https://github.com/user-attachments/assets/b25f61b3-04a4-4e4b-bd7d-2812a775de00" />
+<img width="1132" height="787" alt="image" src="https://github.com/user-attachments/assets/1369274a-058f-4d23-9eac-2aa9c331f60a" />
+
+
+---
+
 ## ▶️ Installation & Run Instructions
 
 ### 📌 Clone this repository
